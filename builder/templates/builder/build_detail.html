@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ build.name }}</title>
+</head>
+<body>
+  <h1>{{ build.name }}</h1>
+
+  {% for component in components %}
+    <article>
+      <h2>{{ component.get_category_display }}</h2>
+      <p>{{ component.name }}</p>
+      <p>{{ component.price }} сом</p>
+    </article>
+  {% empty %}
+    <p>В сборке пока нет комплектующих.</p>
+  {% endfor %}
+  {% if compatibility_warnings %}
+    <div>
+      <strong>Проверь совместимость:</strong>
+      <ul>
+        {% for warning in compatibility_warnings %}
+          <li>{{ warning }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  <h2>Итого: {{ total }} сом</h2>
+
+  <p>
+    <a href="{% url 'catalog' %}">Вернуться в каталог</a>
+  </p>
+</body>
+</html>

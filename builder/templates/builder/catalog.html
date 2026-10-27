@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Каталог комплектующих</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #003006;
+      --gold: #FFD700;
+      --white: #ffffff;
+      --line: rgb(255 255 255 / 16%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--white);
+      background: var(--background);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    a { color: inherit; text-underline-offset: 4px; }
+    button, input, select { font: inherit; color: var(--white); }
+    button, input:not([type="hidden"]), select { min-height: 44px; border-radius: 6px; }
+    button { padding: 10px 16px; border: 1px solid var(--gold); background: transparent; cursor: pointer; }
+    button:hover { background: rgb(255 215 0 / 10%); }
+    :is(a, button, input, select):focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+    input:not([type="hidden"]), select { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); background: var(--background); }
+    input::placeholder { color: var(--white); opacity: .6; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.2; font-weight: 600; letter-spacing: -.03em; }
+    h2 { font-size: 20px; font-weight: 600; }
+    h3 { font-size: 16px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+    .shell { width: min(1180px, 100%); margin-inline: auto; padding-inline: 28px; }
+    .header { padding-block: 28px; border-bottom: 1px solid var(--line); }
+    .header-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { font-size: 14px; font-weight: 600; }
+    .brand::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--gold); }
+    .build-link { font-size: 14px; text-decoration: none; }
+    .build-link:hover { text-decoration: underline; }
+    .intro { padding-block: 38px 30px; }
+    .intro p { margin-top: 12px; font-size: 14px; line-height: 1.6; opacity: .75; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 36px; align-items: start; padding-bottom: 48px; }
+    .catalog { min-width: 0; }
+    .filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(160px, .8fr) auto; gap: 10px; align-items: end; margin-bottom: 28px; }
+    .field { display: grid; gap: 8px; min-width: 0; font-size: 13px; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .count { font-size: 13px; opacity: .7; font-variant-numeric: tabular-nums; }
+    .products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 20px; border-radius: 8px; color: var(--background); background: var(--gold); }
+    .category { font-size: 12px; line-height: 1.5; opacity: .7; }
+    .card-bottom { margin-top: auto; padding-top: 18px; }
+    .price { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .stock { margin-top: 5px; font-size: 12px; opacity: .7; }
+    .card form { margin-top: 18px; }
+    .card button { width: 100%; font-size: 13px; color: var(--white); border-color: var(--background); background: var(--background); }
+    .card button:hover { box-shadow: inset 0 0 0 1px var(--gold); }
+    .card button:focus-visible { outline-color: var(--background); }
+    .build { min-width: 0; padding: 24px; border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 8px; scroll-margin-top: 24px; }
+    .build-progress { margin-block: 22px; font-size: 12px; }
+    .progress-label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; line-height: 1.5; }
+    .progress-label strong { font-variant-numeric: tabular-nums; }
+    .build-progress progress { display: block; appearance: none; width: 100%; height: 6px; margin-block: 12px 16px; overflow: hidden; border: 0; border-radius: 6px; color: var(--gold); background: var(--line); accent-color: var(--gold); }
+    .build-progress progress::-webkit-progress-bar { background: var(--line); border-radius: 6px; }
+    .build-progress progress::-webkit-progress-value { background: var(--gold); border-radius: 6px; }
+    .build-progress progress::-moz-progress-bar { background: var(--gold); border-radius: 6px; }
+    .category-progress { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; margin: 0; padding: 0; list-style: none; }
+    .category-progress li { display: flex; align-items: baseline; gap: 7px; min-width: 0; line-height: 1.5; opacity: .65; }
+    .category-progress li.is-selected { opacity: 1; }
+    .category-progress .marker { flex: 0 0 12px; }
+    .category-progress .is-selected .marker { color: var(--gold); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .parts { margin: 0; padding: 0; list-style: none; }
+    .part { padding-block: 18px; border-bottom: 1px solid var(--line); }
+    .part h3 { margin-top: 4px; font-size: 14px; }
+    .part-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
+    .part-price { font-size: 14px; font-variant-numeric: tabular-nums; }
+    .remove { padding: 8px 0 8px 10px; border: 0; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+    .remove:hover { background: transparent; text-decoration-color: var(--gold); }
+    .warnings { margin-top: 18px; padding: 12px 14px; border-left: 2px solid var(--gold); background: rgb(255 215 0 / 5%); font-size: 13px; line-height: 1.6; }
+    .warnings ul { margin: 8px 0 0; padding-left: 18px; }
+    .warnings li + li { margin-top: 6px; }
+    .total { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 24px; font-size: 16px; }
+    .total strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+    .save-form { display: grid; gap: 14px; margin-top: 24px; }
+    .clear-form { margin-top: 10px; text-align: center; }
+    .clear-button { width: 100%; border-color: transparent; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+    .clear-button:hover { background: transparent; text-decoration-color: var(--gold); }
+    .empty { padding: 24px 0; font-size: 14px; line-height: 1.7; }
+    .empty p { opacity: .75; }
+    .empty a { display: inline-block; margin-top: 12px; }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: minmax(0, 1fr) 290px; gap: 24px; }
+      .filters { grid-template-columns: minmax(0, 1fr) auto; }
+      .filters .field:first-child { grid-column: 1 / -1; }
+      .products { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .shell { padding-inline: 20px; }
+      .layout { grid-template-columns: 1fr; }
+      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .intro { padding-block: 28px; }
+    }
+    @media (max-width: 480px) {
+      .shell { padding-inline: 16px; }
+      .header { padding-block: 20px; }
+      .header-row { gap: 12px; }
+      .brand, .build-link { font-size: 12px; }
+      .products { grid-template-columns: 1fr; }
+      .build { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="shell header-row">
+      <span class="brand">Конфигуратор ПК</span>
+      <a class="build-link" href="#build">Моя сборка · {{ selected_components|length }}</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="intro">
+      <h1>Каталог комплектующих</h1>
+      <p>Выбирай детали и собирай свой компьютер.</p>
+    </div>
+
+    <div class="layout">
+      <section class="catalog" aria-labelledby="catalog-heading">
+        <form class="filters" method="get" action="{% url 'catalog' %}" role="search">
+          <label class="field" for="search">Поиск
+            <input id="search" type="search" name="q" value="{{ query }}" placeholder="Название комплектующей">
+          </label>
+          <label class="field" for="category">Категория
+            <select id="category" name="category">
+              <option value="">Все категории</option>
+              {% for value, label in categories %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <button type="submit">Найти</button>
+        </form>
+
+        <div class="section-heading">
+          <h2 id="catalog-heading">Комплектующие</h2>
+          <span class="count">{{ components|length }}</span>
+        </div>
+        {% if components %}
+          <div class="products">
+            {% for component in components %}
+              <article class="card">
+                <p class="category">{{ component.get_category_display }}</p>
+                <h3>{{ component.name }}</h3>
+                <div class="card-bottom">
+                  <p class="price">{{ component.price }} сом</p>
+                  <p class="stock">В наличии</p>
+                  <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
+                    <input type="hidden" name="component_id" value="{{ component.pk }}">
+                    <button type="submit" aria-label="Добавить в сборку: {{ component.name }}">Добавить в сборку</button>
+                  </form>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty">
+            <p>Комплектующие не найдены. Попробуй другое название или категорию.</p>
+            {% if query or selected_category %}<a href="{% url 'catalog' %}">Сбросить фильтры</a>{% endif %}
+          </div>
+        {% endif %}
+      </section>
+
+      <aside class="build" id="build" aria-labelledby="build-heading">
+        <div class="section-heading">
+          <h2 id="build-heading">Моя сборка</h2>
+          <span class="count">{{ selected_components|length }}</span>
+        </div>
+
+        {% if build_progress and category_count %}
+          <div class="build-progress">
+            <p class="progress-label" id="progress-label">
+              <span>Выбрано категорий</span>
+              <strong>{{ completed_count }} из {{ category_count }}</strong>
+            </p>
+            <progress value="{{ completed_count }}" max="{{ category_count }}" aria-labelledby="progress-label">{{ completed_count }} из {{ category_count }}</progress>
+            <ul class="category-progress" aria-label="Категории сборки">
+              {% for item in build_progress %}
+                <li class="{% if item.selected %}is-selected{% endif %}">
+                  <span class="marker" aria-hidden="true">{% if item.selected %}✓{% else %}○{% endif %}</span>
+                  <span>{{ item.label }}<span class="sr-only"> — {% if item.selected %}выбрано{% else %}не выбрано{% endif %}</span></span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if selected_components %}
+          <ul class="parts">
+            {% for component in selected_components %}
+              <li class="part">
+                <p class="category">{{ component.get_category_display }}</p>
+                <h3>{{ component.name }}</h3>
+                <div class="part-bottom">
+                  <span class="part-price">{{ component.price }} сом</span>
+                  <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="component_id" value="{{ component.pk }}">
+                    <button class="remove" type="submit" aria-label="Убрать из сборки: {{ component.name }}">Убрать</button>
+                  </form>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty"><p>Добавь комплектующие из каталога — они появятся здесь.</p></div>
+        {% endif %}
+
+        {% if compatibility_warnings %}
+          <div class="warnings">
+            <strong>Проверь совместимость</strong>
+            <ul>
+              {% for warning in compatibility_warnings %}<li>{{ warning }}</li>{% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <div class="total"><span>Итого</span><strong>{{ total }} сом</strong></div>
+        {% if selected_components %}
+          <form class="save-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save">
+            <label class="field" for="build-name">Название сборки
+              <input id="build-name" type="text" name="name" maxlength="100" placeholder="Моя сборка">
+            </label>
+            <button type="submit">Сохранить сборку</button>
+          </form>
+          <form class="clear-form" method="post" action="{% url 'catalog' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="clear">
+            <button class="clear-button" type="submit">Очистить сборку</button>
+          </form>
+        {% endif %}
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
